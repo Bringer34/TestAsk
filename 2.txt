@@ -1,0 +1,27 @@
+from pyppeteer import launch
+import asyncio
+from requests_html import HTMLSession
+
+async def main():
+    browser = await launch(headless=False)
+    page = await browser.newPage()
+    await page.goto('https://x.com/elonmusk')
+    await page.waitForSelector('article div[lang]')
+    tweets = await page.querySelectorAll('article div[lang]')
+    for tweet in tweets:
+        content = await page.evaluate('(element) => element.textContent', tweet)
+        print(content)
+    await browser.close()
+asyncio.get_event_loop().run_until_complete(main())
+
+
+session = HTMLSession()
+#r = session.get('https://x.com/elonmusk')
+#
+r = session.get('https://twitter.com/x/migrate?tok=7b2265223a222f656c6f6e6d75736b222c2274223a313732353838343535357d306b4883603d2cb43199aebb0b9b1ae8')
+#r = session.get('https://twitter.com?mx=1')
+#r = session.get('https://static.ads-twitter.com/uwt.js')
+#https://abs.twimg.com/responsive-web/client-web-legacy/polyfills.cb673e9a.js
+#https://static.ads-twitter.com/uwt.js
+#r.html.render()
+print(r.text)
